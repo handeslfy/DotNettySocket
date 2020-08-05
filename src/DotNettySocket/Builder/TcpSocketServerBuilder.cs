@@ -4,7 +4,9 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using System;
+using System.Net;
 using System.Threading.Tasks;
+using OpenTl.Netty.Socks.Handlers;
 
 namespace Coldairarrow.DotNettySocket
 {
@@ -32,6 +34,12 @@ namespace Coldairarrow.DotNettySocket
 
             return this;
         }
+
+        public ITcpSocketServerBuilder SetSocks5(string ip, int port)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public async override Task<ITcpSocketServer> BuildAsync()
         {

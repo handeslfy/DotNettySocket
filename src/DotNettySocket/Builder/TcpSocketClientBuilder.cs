@@ -4,7 +4,9 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using System;
+using System.Net;
 using System.Threading.Tasks;
+using OpenTl.Netty.Socks.Handlers;
 
 namespace Coldairarrow.DotNettySocket
 {
@@ -26,7 +28,14 @@ namespace Coldairarrow.DotNettySocket
 
         public ITcpSocketClientBuilder SetLengthFieldEncoder(int lengthFieldLength)
         {
-            _setEncoder += x => x.AddLast(new LengthFieldPrepender(lengthFieldLength));
+            _setEncoder += x => x.AddLast(new LengthFieldPrepender(lengthFieldLength,false));
+
+            return this;
+        }
+
+        public ITcpSocketClientBuilder SetSocks5(string ip ,int port)
+        {
+           _setEncoder += x => x.AddFirst(new Socks5ProxyHandler(new IPEndPoint(IPAddress.Parse(ip), port)));
 
             return this;
         }
@@ -41,7 +50,7 @@ namespace Coldairarrow.DotNettySocket
                 .Option(ChannelOption.TcpNodelay, true)
                 .Handler(new ActionChannelInitializer<IChannel>(channel =>
                 {
-                    IChannelPipeline pipeline = channel.Pipeline;
+                    var pipeline = channel.Pipeline;
                     _setEncoder?.Invoke(pipeline);
                     pipeline.AddLast(new CommonChannelHandler(tcpClient));
                 })).ConnectAsync($"{_ip}:{_port}".ToIPEndPoint());

@@ -26,5 +26,7 @@ namespace Coldairarrow.DotNettySocket
         /// <param name="lengthFieldLength">长度字段占字节数</param>
         /// <returns></returns>
         TBuilder SetLengthFieldEncoder(int lengthFieldLength);
+
+        TBuilder SetSocks5(string ip, int port);
     }
 }
